@@ -14,7 +14,9 @@ class ViewAllItems extends StatefulWidget {
 
 class _ViewAllItemsState extends State<ViewAllItems> {
   final CollectionReference completeApp =
-      FirebaseFirestore.instance.collection("Dishes");
+  FirebaseFirestore.instance.collection("Dishes");
+
+  String searchQuery = ""; // Store the user's search query
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class _ViewAllItemsState extends State<ViewAllItems> {
       backgroundColor: kbackgroundColor,
       appBar: AppBar(
         backgroundColor: kbackgroundColor,
-        automaticallyImplyLeading: false, //it remove the appbar back button
+        automaticallyImplyLeading: false, //it removes the appbar back button
         elevation: 0,
         actions: [
           const SizedBox(
@@ -50,37 +52,64 @@ class _ViewAllItemsState extends State<ViewAllItems> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(left: 15, right: 5),
+        padding: const EdgeInsets.only(left: 15, right: 5),
         child: Column(
           children: [
-            const SizedBox(height: 10,),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 22),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value.toLowerCase(); // Update search query
+                  });
+                },
+                decoration: const InputDecoration(
+                  filled: true,
+                  prefixIcon: Icon(Iconsax.search_normal),
+                  fillColor: Colors.white,
+                  border: InputBorder.none,
+                  hintText: "Search any recipes",
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.vertical(),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
             StreamBuilder(
               stream: completeApp.snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                 if (streamSnapshot.hasData) {
+                  final filteredDocs = streamSnapshot.data!.docs.where((doc) {
+                    final recipeName =
+                    doc['name'].toString().toLowerCase(); // Adjust field key
+                    return recipeName.contains(searchQuery);
+                  }).toList();
+
                   return GridView.builder(
-                      itemCount: streamSnapshot.data!.docs.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.78,
-                      ),
-                      itemBuilder: (context, index) {
-                        final DocumentSnapshot documentSnapshot =
-                            streamSnapshot.data!.docs[index];
-
-                        return Column(
-                          children: [
-                            FoodItemsDisplay(documentSnapshot: documentSnapshot),
-
-                          ],
-                        );
-                      });
+                    itemCount: filteredDocs.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.78,
+                    ),
+                    itemBuilder: (context, index) {
+                      final DocumentSnapshot documentSnapshot = filteredDocs[index];
+                      return Column(
+                        children: [
+                          FoodItemsDisplay(documentSnapshot: documentSnapshot),
+                        ],
+                      );
+                    },
+                  );
                 }
-                //it means if snapshot has date then show the date otherwise show the progress bar
-                return Center(
+                // Show progress indicator if data is not available
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               },

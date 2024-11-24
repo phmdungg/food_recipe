@@ -7,8 +7,10 @@ import 'package:recipe/Provider/quantity.dart';
 import 'package:recipe/Utils/constants.dart';
 import 'package:recipe/Widget/my_icon_button.dart';
 import 'package:recipe/Widget/quantity_increment_decrement.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
+
   final DocumentSnapshot<Object?> documentSnapshot;
 
   const RecipeDetailScreen({super.key, required this.documentSnapshot});
@@ -18,8 +20,24 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+
+  late YoutubePlayerController _youtubeController;
+
+
+
   @override
   void initState() {
+    String videoUrl = widget.documentSnapshot['videoLink'];
+    String? videoId = YoutubePlayer.convertUrlToId(videoUrl);
+    if (videoId != null) {
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+        ),
+      );
+    }
     List<double> baseAmounts = widget.documentSnapshot['ingredientsAmount']
         .map<double>((amount) => double.parse(amount.toString()))
         .toList();
@@ -29,11 +47,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   }
 
   @override
+  void dispose() {
+    _youtubeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = FavoriteProvider.of(context);
     final quantityProvider = Provider.of<QuantityProivder>(context);
+    List<dynamic> cookingSteps = widget.documentSnapshot['cookingSteps'];
+
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -306,12 +332,60 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                 .toList(),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
-                  SizedBox(
-                    height: 40,
+                  Text(
+                    "Cooking Steps",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: cookingSteps.length,
+                    itemBuilder: (context, index) {
+                      return
+                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${index + 1}. ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                cookingSteps[index],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
+                  // YouTube Video Player (now above cooking steps)
+                  if (_youtubeController.initialVideoId.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: YoutubePlayer(
+                        controller: _youtubeController,
+                        showVideoProgressIndicator: true,
+                        onReady: () {
+                          print('YouTube Player is ready!');
+                        },
+                      ),
+                    ),
+                  SizedBox(height: 100),
                 ],
               ),
             ),

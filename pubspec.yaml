@@ -41,6 +41,8 @@ dependencies:
   cloud_firestore: ^5.4.4
   firebase_auth: ^5.3.3
   shared_preferences: ^2.3.3
+  video_player: ^2.9.2
+  youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
   flutter_test:
