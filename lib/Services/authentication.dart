@@ -52,4 +52,13 @@ class AuthServices {
     }
     return res;
   }
+
+  Future SignOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  Future deleteUser() async {
+    User? user = await FirebaseAuth.instance.currentUser;
+    user?.delete();
+  }
 }

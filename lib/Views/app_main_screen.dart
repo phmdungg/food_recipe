@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:recipe/Utils/constants.dart';
 import 'package:recipe/Views/favorite_screen.dart';
 import 'package:recipe/Views/my_app_home_screen.dart';
+import 'package:recipe/Views/profile_screen.dart';
 
 class AppMainScreen extends StatefulWidget {
   const AppMainScreen({super.key});
@@ -20,8 +21,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
     page = [
     const  MyAppHomeScreen(),
       const FavoriteScreen(),
-      navBarPage(Iconsax.heart5),
-      navBarPage(Iconsax.setting_21),
+      const Profile(),
     ];
 
     super.initState();
