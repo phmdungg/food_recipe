@@ -24,6 +24,6 @@
    
 <img src="https://github.com/user-attachments/assets/87eb026f-0a5e-4805-906a-d0e85e61ab9c" width="250" alt="DetailScreen1" /> <img src="https://github.com/user-attachments/assets/5b8ede7e-d166-45f3-9374-6566cb491209" width="250" alt="DetailScreen2" />
 
-3. Favorites
+4. Favorites
    
 <img src="https://github.com/user-attachments/assets/83bc4ddf-983e-42f3-b778-5672ba2c0f05" width="250" alt="FavoriteScreen" /> 
