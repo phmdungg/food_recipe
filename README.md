@@ -1,17 +1,17 @@
-# recipe
+# Food Recipe
 
-A new Flutter project.
+ A mobile application that provides a collection of recipes for various dishes. Users can browse, search, and save recipes with
+ detailed ingredient lists and step-by-step instructions.
 
-## Getting Started
+## Functions
 
-This project is a starting point for a Flutter application.
+  1. SignIn/SignUp
+  2. Search food
+  3. See detailed recipe
+  4. Save favorite food
+  5. Watch video
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# food_recipe
+### Demo
+1. SignIn/SignUp Screen
+![Image](https://github.com/user-attachments/assets/86022169-1e9c-42c1-9ddb-345954a4840a)
+![Image](https://github.com/user-attachments/assets/745a1042-78aa-4e27-ab72-32d4e38532b5)
